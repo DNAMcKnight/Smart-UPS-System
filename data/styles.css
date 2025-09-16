@@ -1,0 +1,21 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    margin-top: 50px;
+}
+
+#toggleBtn {
+    font-size: 6vw;
+    /* responsive font size */
+    padding: 4vw 8vw;
+    /* responsive padding */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#toggleBtn.active {
+    background-color: #f44336;
+}
