@@ -103,6 +103,9 @@ void setup()
     // if you get here you have connected to the WiFi
     Serial.println("connected...yeey :)");
   }
+  // wifi_set_sleep_type(MODEM_SLEEP_T); // Allow modem sleep
+  wifi_set_sleep_type(LIGHT_SLEEP_T); // Light sleep with DTIM listening (keeps connection alive)
+
   webserver();
   digitalWrite(LED_PIN, HIGH);
   Serial.println("HTTP server started");
