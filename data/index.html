@@ -6,41 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
 </head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
 <body>
-    <h2>Control Panel</h2>
-    <div class="control-row">
-        <span class="ups-text"><b>Turn ON/OFF UPS</b>
-        </span>
-        <label class="switch">
-            <input id="toggleBtn" type="checkbox">
-            <span class="slider round"></span>
-        </label>
+    <h2 class="header">Control Panel</h2>
+    <p class="header3">ESP8266</p>
+    <div class="container">
+        <div class="control-row">
+            <span class="ups-text">Turn ON/OFF UPS
+            </span>
+            <label class="switch">
+                <input id="toggleBtn" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="control-row">
+            <span class="ups-text">Turn OFF PC
+            </span>
+            <label class="switch">
+                <input id="toggleBtn1" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="control-row">
+            <span class="ups-text">Turn OFF PC & UPS
+            </span>
+            <label class="switch">
+                <input id="toggleBtn2" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="control-row">
+            <span class="ups-text">System Sleep Mode
+            </span>
+            <label class="switch">
+                <input id="toggleBtn3" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
     </div>
-    <div class="control-row">
-        <span class="ups-text"><b>Turn OFF PC</b>
-        </span>
-        <label class="switch">
-            <input id="toggleBtn1" type="checkbox">
-            <span class="slider round"></span>
-        </label>
-    </div>
-    <div class="control-row">
-        <span class="ups-text"><b>Turn OFF PC & UPS</b>
-        </span>
-        <label class="switch">
-            <input id="toggleBtn2" type="checkbox">
-            <span class="slider round"></span>
-        </label>
-    </div>
-    <div class="control-row">
-        <span class="ups-text"><b>System Sleep Mode</b>
-        </span>
-        <label class="switch">
-            <input id="toggleBtn3" type="checkbox">
-            <span class="slider round"></span>
-        </label>
-    </div>
+
     <script src="scripts.js"></script>
 </body>
 

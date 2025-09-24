@@ -1,10 +1,33 @@
 body {
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    margin-top: 50px;
-    padding-left: 25px;  /* 50px from the left edge */
-    padding-right: 25px; /* 50px from the right edge */
+  font-family: Rubik, sans-serif;
+  background-color: #f1f3f6;
 }
+
+.container {
+    
+  margin-top: 50px;
+  padding-left: 10px;  /* 50px from the left edge */
+  padding-right: 40px; /* 50px from the right edge */
+}
+
+.header {
+  text-align: right;
+  font-size: 35px;
+  margin-bottom: 0px;
+  padding-right: 15px;
+  }
+  
+.header3 {
+  text-align: right;
+  font-family: Roboto, sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  margin-top: 0px;
+  padding-right: 15px;
+  color: #C1cbd8;
+}
+
+
 
 .switch {
   position: relative;
@@ -26,7 +49,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #929fb5;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -44,11 +67,11 @@ body {
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #000000;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #000000;
 }
 
 input:checked + .slider:before {
@@ -68,14 +91,15 @@ input:checked + .slider:before {
 
 
 .control-row {
+  font-size: 20px;
+  font-weight: 600;
   display: flex;  /* Use flexbox */
   justify-content: space-between; /* Space out the elements */
   align-items: center;  /* Vertically center the items */
   width: 100%; /* Full width of the container */
   margin-top: 15px; /* Optional, just to add some vertical space */
   gap: 5vw;  /* This sets the spacing to be based on the viewport width */
-  background-color: #f0f0f0;
-  padding: 10px; /* Optional, just to add some padding */
+  background-color: #ffffff;
+  padding: 15px; /* Optional, just to add some padding */
   border-radius: 10px;
-  box-shadow: #b8b7b7 0px 0px 10px;
 }
