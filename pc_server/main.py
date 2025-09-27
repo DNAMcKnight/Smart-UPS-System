@@ -1,6 +1,13 @@
 from fastapi import FastAPI, Request
+import win32api
+import win32con
+import ctypes
+import time
+import subprocess
 
 app = FastAPI()
+
+allowed_hosts = ["localhost", ""]
 
 
 def get_client_ip(request: Request) -> str:
@@ -23,4 +30,36 @@ def get_client_ip(request: Request) -> str:
 
 @app.get("/ip")
 async def ip(request: Request):
+    """retuns IP or forbidden if host not allowed"""
+    if request.headers.get("host") not in allowed_hosts:
+        return {"ip": "forbidden"}
     return {"ip": get_client_ip(request)}
+
+
+@app.get("/shutdown")
+async def shutdown(request: Request):
+    """checks the IP and opens a popup before initiating a shutdown"""
+    timeout = 15
+    user32 = ctypes.windll.user32
+    if request.headers.get("host") not in allowed_hosts:
+        result = user32.MessageBoxTimeoutW(
+            0,  # hWnd = no owner
+            f"Shutdown has been initiated press CANCEL to stop this operation. The system will auto shutdown in 15 seconds or as soon as you press OK",  # text
+            "Auto Shutdown",  # title
+            win32con.MB_OKCANCEL
+            | win32con.MB_TOPMOST
+            | win32con.MB_ICONWARNING,  # buttons + always on top
+            0,
+            timeout * 1000,  # timeout in milliseconds
+        )
+
+        # Detect which button was clicked
+        if result == win32con.IDOK:
+            subprocess.run(["shutdown", "/s", "/f", "/t", "0"])
+            return {"status": "OK"}
+        elif result == win32con.IDCANCEL:
+            return {"status": "Cancelled"}
+        else:
+            subprocess.run(["shutdown", "/s", "/f", "/t", "0"])
+            return {"status": "OK"}
+    # return {"ip": get_client_ip(request)}
