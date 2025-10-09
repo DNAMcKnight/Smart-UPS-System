@@ -2,6 +2,8 @@
 #include <WiFiManager.h>
 #include <ESP8266WebServer.h>
 #include <LittleFS.h>
+#include <ESP8266Ping.h>
+#include <ESP8266HTTPClient.h>
 
 #define LED_PIN 2
 
@@ -21,6 +23,34 @@ void toggle_switch(int angle1, int angle2)
   myservo.write(angle1);
 
   delay(500);
+}
+bool shutdown_callback()
+{
+  HTTPClient http;
+  WiFiClient client;
+  http.begin(client, "http://192.168.0.100:8000/shutdown");
+  int httpResponseCode = http.GET();
+  String response = http.getString();
+  int timeout = response.toInt(); // in seconds
+  http.end();
+
+  if (httpResponseCode <= 0)
+    return false;
+
+  Serial.println("Shutdown requested, timeout: " + String(timeout));
+
+  unsigned long startTime = millis();
+  while (millis() - startTime < timeout * 1000UL)
+  {
+    if (!Ping.ping("192.168.0.100", 2))
+    { // PC is down
+      Serial.println("PC is down!");
+      return true;
+    }
+  }
+
+  Serial.println("Timeout reached, PC still up");
+  return false;
 }
 
 void webserver()
@@ -63,11 +93,36 @@ void webserver()
 
   server.on("/toggle", []()
             {
-              digitalWrite(LED_PIN, LOW);
-              toggle_switch(0, 165);
-              digitalWrite(LED_PIN, HIGH);
-              server.send(200, "text/plain", "OK"); // respond to AJAX
-            });
+    digitalWrite(LED_PIN, LOW);
+    toggle_switch(0, 165);
+    digitalWrite(LED_PIN, HIGH);
+    server.send(200, "text/plain", "OK"); });
+
+  server.on("/complete_shutdown", []()
+            {
+  if (!Ping.ping("192.168.0.100", 2)) {
+    Serial.println("PC is off Toggling UPS switch");
+    digitalWrite(LED_PIN, LOW);
+    toggle_switch(0, 165);
+    digitalWrite(LED_PIN, HIGH);
+    server.send(200, "text/plain", "OK");
+    return;
+  }
+  server.send(200, "text/plain", "OK");
+  bool shutdown = shutdown_callback();
+  Serial.println("Shutdown callback result: " + String(shutdown));
+  if (shutdown)
+  {
+    Serial.println("Toggling UPS switch");
+    digitalWrite(LED_PIN, LOW);
+    toggle_switch(0, 165);
+    digitalWrite(LED_PIN, HIGH);
+  } });
+
+  server.on("/pc_shutdown", []()
+            {
+    server.send(200, "text/plain", "OK");
+    shutdown_callback(); });
 
   server.begin();
 }
@@ -101,7 +156,7 @@ void setup()
   else
   {
     // if you get here you have connected to the WiFi
-    Serial.println("connected...yeey :)");
+    Serial.println("connected...yaay :)");
   }
   // wifi_set_sleep_type(MODEM_SLEEP_T); // Allow modem sleep
   wifi_set_sleep_type(LIGHT_SLEEP_T); // Light sleep with DTIM listening (keeps connection alive)
@@ -115,24 +170,3 @@ void loop()
 {
   server.handleClient();
 }
-
-// #include <ESP8266Ping.h>
-// // 👉 If you specifically want ICMP ping (like the ping command), ESP8266 has a Ping library: ESP8266Ping
-// // . Example:
-
-// void loop()
-// {
-//   static unsigned long lastCheck = 0;
-//   if (millis() - lastCheck > 5000)
-//   {
-//     lastCheck = millis();
-//     if (Ping.ping(IPAddress(192, 168, 0, 100)))
-//     {
-//       Serial.println("Ping success!");
-//     }
-//     else
-//     {
-//       Serial.println("Ping failed!");
-//     }
-//   }
-// }
