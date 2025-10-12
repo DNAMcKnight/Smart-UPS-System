@@ -27,7 +27,11 @@ body {
   color: #C1cbd8;
 }
 
-
+.switch input:disabled + .slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #999;
+}
 
 .switch {
   position: relative;
