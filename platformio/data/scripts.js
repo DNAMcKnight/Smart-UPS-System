@@ -33,6 +33,7 @@ complete_shutdown.addEventListener('click', async () => {
         console.error('Error:', err);
     } finally {
         complete_shutdown.disabled = false;
+        setTimeout(() => { complete_shutdown.checked = false; }, 2000);
     }
 });
 
@@ -48,6 +49,7 @@ pc_shutdown.addEventListener('click', async () => {
         console.error('Error:', err);
     } finally {
         pc_shutdown.disabled = false;
+        setTimeout(() => { pc_shutdown.checked = false; }, 2000);
     }
 });
 
