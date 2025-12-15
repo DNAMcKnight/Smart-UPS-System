@@ -5,6 +5,7 @@ import ctypes
 import time
 import subprocess
 import asyncio
+import httpx
 
 app = FastAPI()
 
@@ -69,3 +70,17 @@ async def shutdown(request: Request):
         return 120
     return {"ip": "forbidden"}
     # return {"ip": get_client_ip(request)}
+
+
+@app.on_event("startup")
+async def on_startup():
+    try:
+        STARTUP_API_URL = "http://192.168.0.66/pc_active"
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.get(STARTUP_API_URL)
+            r.raise_for_status()
+        print("Startup API call successful")
+    except Exception as e:
+        print("Startup API call failed:", e)
+        # Optional: stop the server if this fails
+        # raise RuntimeError("Startup check failed")
