@@ -3,7 +3,15 @@ const toggle_ups = document.getElementById('toggle_ups');
 const pc_shutdown = document.getElementById('pc_shutdown');
 const toggleBtn3 = document.getElementById('toggleBtn3');
 
-document.addEventListener('DOMContentLoaded', () => { });
+document.addEventListener('DOMContentLoaded', async () => {
+    const response = await fetch('/settings')
+    const data = await response.json();
+    if (data.PC_ACTIVE) {
+        toggle_ups.disabled = true;
+    } else {
+        toggle_ups.disabled = false;
+    }
+});
 toggle_ups.addEventListener('click', async () => {
     toggle_ups.disabled = true;
     try {
