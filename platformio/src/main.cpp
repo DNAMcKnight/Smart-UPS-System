@@ -4,8 +4,10 @@
 #include <LittleFS.h>
 #include <ESP8266Ping.h>
 #include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
 
 #define LED_PIN 2
+bool PC_ACTIVE = false;
 
 ESP8266WebServer server(80);
 Servo myservo;
@@ -24,7 +26,13 @@ void toggle_switch(int angle1, int angle2)
 
   delay(500);
 }
-bool shutdown_callback()
+bool pc_active()
+{
+  PC_ACTIVE = true;
+  return true;
+}
+
+bool shutdown_callback(bool monitor)
 {
   HTTPClient http;
   WiFiClient client;
@@ -33,9 +41,10 @@ bool shutdown_callback()
   String response = http.getString();
   int timeout = response.toInt(); // in seconds
   http.end();
-
   if (httpResponseCode <= 0)
     return false;
+  if (monitor == false)
+    return true;
 
   Serial.println("Shutdown requested, timeout: " + String(timeout));
 
@@ -109,7 +118,7 @@ void webserver()
     return;
   }
   server.send(200, "text/plain", "OK");
-  bool shutdown = shutdown_callback();
+  bool shutdown = shutdown_callback(true);
   Serial.println("Shutdown callback result: " + String(shutdown));
   if (shutdown)
   {
@@ -117,12 +126,28 @@ void webserver()
     digitalWrite(LED_PIN, LOW);
     toggle_switch(0, 165);
     digitalWrite(LED_PIN, HIGH);
+    PC_ACTIVE = false;
   } });
 
   server.on("/pc_shutdown", []()
             {
     server.send(200, "text/plain", "OK");
-    shutdown_callback(); });
+    shutdown_callback(false); 
+    PC_ACTIVE = false; });
+
+  server.on("/pc_active", []()
+            {
+    server.send(200, "text/plain", "OK");
+    pc_active(); });
+  server.on("/settings", []()
+            {
+    JsonDocument doc;
+    doc["PC_ACTIVE"] = PC_ACTIVE;
+
+    String response;
+    serializeJson(doc, response);
+
+    server.send(200, "application/json", response); });
 
   server.begin();
 }
