@@ -200,6 +200,12 @@ void setup()
   }
   // wifi_set_sleep_type(MODEM_SLEEP_T); // Allow modem sleep
   wifi_set_sleep_type(LIGHT_SLEEP_T); // Light sleep with DTIM listening (keeps connection alive)
+  if (Ping.ping("192.168.0.100", 2))
+  {
+    Serial.println("Checking PC status");
+    PC_ACTIVE = true;
+    return;
+  }
 
   webserver();
   digitalWrite(LED_PIN, HIGH);
