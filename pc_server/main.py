@@ -74,13 +74,32 @@ async def shutdown(request: Request):
 
 @app.on_event("startup")
 async def on_startup():
+    result = await startup_call()
+    while result == False:
+        user32 = ctypes.windll.user32
+        popup_retry = user32.MessageBoxW(
+            0,  # hWnd = no owner
+            f"Failed to connect to the ESP. Please check your network connection and try again.",  # text
+            "Auto Shutdown",  # title
+            win32con.MB_OKCANCEL
+            | win32con.MB_TOPMOST
+            | win32con.MB_ICONWARNING,  # buttons + always on top
+            0,
+        )
+        # Detect which button was clicked
+        if popup_retry == win32con.IDOK:
+            result = await startup_call()
+        if popup_retry == win32con.IDCANCEL:
+            break
+    print("API call Successful")
+
+
+async def startup_call():
     try:
         STARTUP_API_URL = "http://192.168.0.66/pc_active"
         async with httpx.AsyncClient(timeout=10) as client:
             r = await client.get(STARTUP_API_URL)
             r.raise_for_status()
-        print("Startup API call successful")
+        return True
     except Exception as e:
-        print("Startup API call failed:", e)
-        # Optional: stop the server if this fails
-        # raise RuntimeError("Startup check failed")
+        return False
