@@ -119,6 +119,7 @@ void webserver()
     toggle_switch(0, 165);
     digitalWrite(LED_PIN, HIGH);
     server.send(200, "text/plain", "OK");
+    PC_ACTIVE = false;
     return;
   }
   server.send(200, "text/plain", "OK");
@@ -136,8 +137,16 @@ void webserver()
   server.on("/pc_shutdown", []()
             {
     server.send(200, "text/plain", "OK");
-    shutdown_callback(false); 
-    PC_ACTIVE = false; });
+    bool shutdown = shutdown_callback(false); 
+    Serial.println("Shutdown callback result: " + String(shutdown));
+    if (shutdown)
+    {
+      Serial.println("Toggling UPS switch");
+      digitalWrite(LED_PIN, LOW);
+      toggle_switch(0, 165);
+      digitalWrite(LED_PIN, HIGH);
+      PC_ACTIVE = false;
+  } });
 
   server.on("/pc_active", []()
             {
