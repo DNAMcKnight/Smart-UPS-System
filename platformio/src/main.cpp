@@ -141,10 +141,6 @@ void webserver()
     Serial.println("Shutdown callback result: " + String(shutdown));
     if (shutdown)
     {
-      Serial.println("Toggling UPS switch");
-      digitalWrite(LED_PIN, LOW);
-      toggle_switch(0, 165);
-      digitalWrite(LED_PIN, HIGH);
       PC_ACTIVE = false;
   } });
 
