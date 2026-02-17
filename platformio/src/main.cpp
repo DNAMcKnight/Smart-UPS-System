@@ -7,6 +7,10 @@
 #include <ArduinoJson.h>
 
 #define LED_PIN 2
+#define SHUTDOWN_PIN D6     // trigger shutdown
+#define POWER_TOGGLE_PIN D5 // trigger power toggle
+bool lastShutdownState = HIGH;
+bool lastPowerState = HIGH;
 bool PC_ACTIVE = false;
 
 ESP8266WebServer server(80);
@@ -20,7 +24,7 @@ void toggle_switch(int angle1, int angle2)
   delay(500);
 
   myservo.write(angle2);
-  delay(1000);
+  delay(500);
 
   myservo.write(angle1);
 
@@ -157,6 +161,8 @@ void setup()
   // it is a good practice to make sure your code sets wifi mode how you want it.
 
   // put your setup code here, to run once:
+  pinMode(SHUTDOWN_PIN, INPUT_PULLUP);
+  pinMode(POWER_TOGGLE_PIN, INPUT_PULLUP);
   Serial.begin(115200);
   myservo.attach(servoPin);
   pinMode(LED_PIN, OUTPUT);
@@ -190,8 +196,41 @@ void setup()
   digitalWrite(LED_PIN, HIGH);
   Serial.println("HTTP server started");
 }
+void digital_check()
+{
+  bool shutdownNow = digitalRead(SHUTDOWN_PIN);
+  bool powerNow = digitalRead(POWER_TOGGLE_PIN);
+  if (lastShutdownState == HIGH && shutdownNow == LOW && PC_ACTIVE)
+  {
+    // completeShutdown();
+    Serial.println("Shutdown pin triggered");
+    if (!Ping.ping("192.168.0.100", 2))
+    {
+      Serial.println("PC is off Toggling UPS switch");
+      digitalWrite(LED_PIN, LOW);
+      toggle_switch(0, 165);
+      digitalWrite(LED_PIN, HIGH);
+      server.send(200, "text/plain", "OK");
+      return;
+    }
+    server.send(200, "text/plain", "OK");
+    bool shutdown = shutdown_callback(true);
+    Serial.println("Shutdown callback result: " + String(shutdown));
+    if (shutdown)
+    {
+      Serial.println("Toggling UPS switch");
+      digitalWrite(LED_PIN, LOW);
+      toggle_switch(0, 165);
+      digitalWrite(LED_PIN, HIGH);
+      PC_ACTIVE = false;
+    }
+  }
 
+  lastShutdownState = shutdownNow;
+  lastPowerState = powerNow;
+}
 void loop()
 {
   server.handleClient();
+  digital_check();
 }
