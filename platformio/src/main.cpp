@@ -5,6 +5,7 @@
 #include <ESP8266Ping.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
+#include <ArduinoOTA.h>
 
 #define LED_PIN 2
 #define SHUTDOWN_PIN D6     // trigger shutdown
@@ -69,6 +70,7 @@ bool shutdown_callback(bool monitor)
 void webserver()
 {
   LittleFS.begin();
+  server.serveStatic("/icons", LittleFS, "/icons");
   if (!LittleFS.begin())
   {
     Serial.println("Failed to mount filesystem");
@@ -198,14 +200,14 @@ void setup()
   wifi_set_sleep_type(LIGHT_SLEEP_T); // Light sleep with DTIM listening (keeps connection alive)
   if (Ping.ping("192.168.0.100", 2))
   {
-    Serial.println("Checking PC status");
+    Serial.println("PC is running!");
     PC_ACTIVE = true;
-    return;
   }
 
   webserver();
   digitalWrite(LED_PIN, HIGH);
   Serial.println("HTTP server started");
+  ArduinoOTA.begin();
 }
 void digital_check()
 {
@@ -244,4 +246,5 @@ void loop()
 {
   server.handleClient();
   digital_check();
+  ArduinoOTA.handle();
 }
