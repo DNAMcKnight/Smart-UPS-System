@@ -1,30 +1,68 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+
+@media (min-width: 700px) { 
+  body { 
+    border: 1px solid var(--switch);
+  border-radius: 20px;
+  padding: 10px;
+  } 
+}
 body {
   font-family: Rubik, sans-serif;
-  background-color: #f1f3f6;
+  background-color: var(--bg);
+  color: var(--text);
+  max-width: 700px;
+  margin: 0 auto;
+
+}
+body.dark {
+  --bg: #f1f3f6;
+  --card: #ffffff;
+  --text: #000000;
+  --nav: #f8f8f8;
+  --shadow: rgba(0,0,0,0.2);
+  --switch: #929fb5;
+  --checked-color: #000000;
+  --platform-color: #C1cbd8;
+}
+:root {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #e6e6e6;
+  --nav: #1a1a1a;
+  --shadow: rgba(0,0,0,0.6);
+  --switch: #555;
+  --checked-color: #008cff;
+  --platform-color: #868d97;
 }
 
 .container {
-    
-  margin-top: 50px;
-  padding-left: 10px;  /* 50px from the left edge */
-  padding-right: 40px; /* 50px from the right edge */
+  padding: 10px;
+  width: 100%;
+  
 }
-
+.logo {
+  font-size: 30px;
+}
 .header {
-  text-align: right;
   font-size: 35px;
-  margin-bottom: 0px;
-  padding-right: 15px;
+  text-decoration: underline;
   }
   
-.header3 {
+.platform {
   text-align: right;
   font-family: Roboto, sans-serif;
   font-weight: 500;
   font-size: 22px;
   margin-top: 0px;
-  padding-right: 15px;
-  color: #C1cbd8;
+  padding: 10px 15px;
+  color: var(--platform-color);
 }
 
 .switch input:disabled + .slider {
@@ -53,9 +91,10 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #929fb5;
+  background-color: var(--switch);
   -webkit-transition: .4s;
   transition: .4s;
+  
 }
 
 .slider:before {
@@ -71,7 +110,7 @@ body {
 }
 
 input:checked + .slider {
-  background-color: #000000;
+  background-color: var(--checked-color);
 }
 
 input:focus + .slider {
@@ -103,7 +142,65 @@ input:checked + .slider:before {
   width: 100%; /* Full width of the container */
   margin-top: 15px; /* Optional, just to add some vertical space */
   gap: 5vw;  /* This sets the spacing to be based on the viewport width */
-  background-color: #ffffff;
+  background-color: var(--card);
   padding: 15px; /* Optional, just to add some padding */
   border-radius: 10px;
+  z-index: 1;
 }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 5rem;
+  background-color: var(--nav);
+  box-shadow: 0 0 10px var(--shadow);
+  gap: 20px;
+  position: sticky;
+  top: 0px;
+  width: 100%;
+  z-index: 10;
+}
+
+
+.menu-icon {
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  color: var(--text);
+  background-color: var(--text);
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  
+  -webkit-mask: url('/icons/square-menu.svg') no-repeat center;
+  mask: url('/icons/square-menu.svg') no-repeat center;
+  
+  /* 3. Ensure it scales correctly */
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.dark-icon {
+    font-size: 50px;
+    display: inline-flex;          /* Allows for centering */
+    justify-content: center;      /* Centers the content horizontally */
+    align-items: center;          /* Centers the content vertically */
+    border-radius: 50%;           /* Makes it a circle */
+    padding: 5px;                 /* Padding around the letter */
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    color: var(--text);
+    background-color: var(--text);
+    -webkit-mask: url('/icons/sun.svg') no-repeat center;
+    mask: url('/icons/sun.svg') no-repeat center;
+    
+    /* 3. Ensure it scales correctly */
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+

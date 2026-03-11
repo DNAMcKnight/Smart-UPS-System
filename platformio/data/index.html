@@ -11,39 +11,62 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
 <body>
-    <h2 class="header">Control Panel</h2>
-    <p class="header3">ESP8266</p>
+    <nav class="navbar">
+        <div class="left-section">
+            <div class="menu-icon">
+            </div>
+        </div>
+        <div class="middle-section">
+
+            <div class="logo">
+                ESP-Control
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="create-section">
+                <label class="switch">
+                    <input type="checkbox" id="darkToggle">
+                    <div class="dark-icon"></div>
+                </label>
+
+
+            </div>
+        </div>
+    </nav>
+
+    <p class="platform">ESP8266</p>
+
     <div class="container">
         <div class="control-row">
-            <span class="ups-text">Turn ON/OFF UPS
-            </span>
+            <div class="ups-text">Turn ON/OFF UPS
+            </div>
             <label class="switch">
                 <input id="toggle_ups" type="checkbox">
-                <span class="slider round"></span>
+                <div class="slider round"></div>
             </label>
         </div>
         <div class="control-row">
-            <span class="ups-text">Turn OFF PC & UPS
-            </span>
+            <div class="ups-text">Turn OFF PC & UPS
+            </div>
             <label class="switch">
                 <input id="complete_shutdown" type="checkbox">
-                <span class="slider round"></span>
+                <div class="slider round"></div>
             </label>
         </div>
         <div class="control-row">
-            <span class="ups-text">Turn OFF PC
-            </span>
+            <div class="ups-text">Turn OFF PC
+            </div>
             <label class="switch">
                 <input id="pc_shutdown" type="checkbox">
-                <span class="slider round"></span>
+                <div class="slider round"></div>
             </label>
         </div>
         <div class="control-row">
-            <span class="ups-text">System Sleep Mode
-            </span>
+            <div class="ups-text">System Sleep Mode
+            </div>
             <label class="switch">
                 <input id="toggleBtn3" type="checkbox">
-                <span class="slider round"></span>
+                <div class="slider round"></div>
             </label>
         </div>
     </div>

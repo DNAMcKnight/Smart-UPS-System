@@ -2,6 +2,7 @@ const complete_shutdown = document.getElementById('complete_shutdown');
 const toggle_ups = document.getElementById('toggle_ups');
 const pc_shutdown = document.getElementById('pc_shutdown');
 const toggleBtn3 = document.getElementById('toggleBtn3');
+const toggle = document.querySelector("#darkToggle");
 
 document.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch('/settings')
@@ -60,6 +61,11 @@ pc_shutdown.addEventListener('click', async () => {
         setTimeout(() => { pc_shutdown.checked = false; }, 2000);
     }
 });
+
+toggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark", toggle.checked);
+});
+
 
 
 
