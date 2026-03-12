@@ -4,6 +4,7 @@ const pc_shutdown = document.getElementById('pc_shutdown');
 const toggleBtn3 = document.getElementById('toggleBtn3');
 const toggle = document.querySelector("#darkToggle");
 
+
 document.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch('/settings')
     const data = await response.json();
@@ -62,8 +63,9 @@ pc_shutdown.addEventListener('click', async () => {
     }
 });
 
-toggle.addEventListener("change", () => {
+toggle.addEventListener('click', async () => {
     document.body.classList.toggle("dark", toggle.checked);
+    console.og
 });
 
 
