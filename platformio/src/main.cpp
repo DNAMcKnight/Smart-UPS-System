@@ -37,7 +37,7 @@ bool pc_active()
   return true;
 }
 
-bool shutdown_callback(bool monitor)
+bool shutdown_callback(bool monitor) // calls the PC shutdown API and waits for it
 {
   HTTPClient http;
   WiFiClient client;
@@ -139,7 +139,7 @@ void webserver()
   server.on("/pc_shutdown", []()
             {
     server.send(200, "text/plain", "OK");
-    bool shutdown = shutdown_callback(false); 
+    bool shutdown = shutdown_callback(true); 
     Serial.println("Shutdown callback result: " + String(shutdown));
     if (shutdown)
     {
@@ -213,23 +213,23 @@ void digital_check()
 {
   bool shutdownNow = digitalRead(SHUTDOWN_PIN);
   bool powerNow = digitalRead(POWER_TOGGLE_PIN);
-  if (lastShutdownState == HIGH && shutdownNow == LOW && PC_ACTIVE)
+  if (lastShutdownState == HIGH && shutdownNow == LOW && PC_ACTIVE) // last LDR state was on and now it's OFF and the pc is active
   {
-    // completeShutdown();
     Serial.println("Shutdown pin triggered");
-    if (!Ping.ping("192.168.0.100", 2))
+    if (!Ping.ping("192.168.0.100", 2)) // if no PC heartbeat toggles the switch
     {
       Serial.println("PC is off Toggling UPS switch");
       digitalWrite(LED_PIN, LOW);
       toggle_switch(0, 165);
       digitalWrite(LED_PIN, HIGH);
       server.send(200, "text/plain", "OK");
+      PC_ACTIVE = false;
       return;
     }
     server.send(200, "text/plain", "OK");
     bool shutdown = shutdown_callback(true);
     Serial.println("Shutdown callback result: " + String(shutdown));
-    if (shutdown)
+    if (shutdown) // Once the PC is off
     {
       Serial.println("Toggling UPS switch");
       digitalWrite(LED_PIN, LOW);
