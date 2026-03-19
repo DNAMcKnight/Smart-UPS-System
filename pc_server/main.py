@@ -38,7 +38,7 @@ async def ip(request: Request):
     return {"ip": get_client_ip(request)}
 
 
-async def initiate_shutdown():
+def initiate_shutdown():
     timeout = 15
     user32 = ctypes.windll.user32
     result = user32.MessageBoxTimeoutW(
@@ -66,7 +66,7 @@ async def shutdown(request: Request):
     """checks the IP and opens a popup before initiating a shutdown"""
     print(request.client.host)
     if request.client.host in allowed_hosts:
-        asyncio.create_task(initiate_shutdown())
+        asyncio.create_task(asyncio.to_thread(initiate_shutdown))
         return 120
     return {"ip": "forbidden"}
     # return {"ip": get_client_ip(request)}
@@ -81,9 +81,7 @@ async def on_startup():
             0,  # hWnd = no owner
             f"Failed to connect to the ESP. Please check your network connection and try again.",  # text
             "Auto Shutdown",  # title
-            win32con.MB_OKCANCEL
-            | win32con.MB_TOPMOST
-            | win32con.MB_ICONWARNING,  # buttons + always on top
+            win32con.MB_TOPMOST | win32con.MB_ICONWARNING,  # buttons + always on top
             0,
         )
         # Detect which button was clicked
